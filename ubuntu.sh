@@ -40,21 +40,19 @@ function install_argocd() { #HELP Install ArgoCD:\nBOCKER argocd
 function install_warp() { #HELP Install cloudflare:\nBOCKER warp
 	curl https://pkg.cloudflareclient.com/pubkey.gpg \
 	| sudo gpg --yes --dearmor --output /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg
-	
 	echo "deb [arch=amd64 signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ $(lsb_release -cs) main" \
 	| sudo tee /etc/apt/sources.list.d/cloudflare-client.list
-
-    update_sourcelist
-    sudo apt install cloudflare-warp
-    warp-cli register
+	update_sourcelist
+	sudo apt install cloudflare-warp
+	warp-cli register
 }
 
 function install_codium() { #HELP Install Codium:\nBOCKER codium
 	wget -qO- https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg \
-    | gpg --yes --dearmor --output /usr/share/keyrings/vscodium-archive-keyring.gpg
-    echo 'deb [ signed-by=/usr/share/keyrings/vscodium-archive-keyring.gpg ] https://download.vscodium.com/debs vscodium main' \
-    | sudo tee /etc/apt/sources.list.d/vscodium.list
-    update_sourcelist
+ 	| gpg --yes --dearmor --output /usr/share/keyrings/vscodium-archive-keyring.gpg
+	echo 'deb [ signed-by=/usr/share/keyrings/vscodium-archive-keyring.gpg ] https://download.vscodium.com/debs vscodium main' \
+	| sudo tee /etc/apt/sources.list.d/vscodium.list
+	update_sourcelist
 	sudo apt install codium
 }
 
@@ -62,25 +60,26 @@ function install_chrome() { #HELP Install Google Chrome:\nBOCKER chrome
 	wget -qO- https://dl-ssl.google.com/linux/linux_signing_key.pub \
 	| gpg --dearmor \
 	| sudo dd of=/usr/share/keyrings/google-chrome-keyring.gpg
-  echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" \
-  | sudo tee /etc/apt/sources.list.d/google-chrome.list
-  update_sourcelist
+  	echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" \
+  	| sudo tee /etc/apt/sources.list.d/google-chrome.list
+  	update_sourcelist
 	sudo apt install google-chrome-stable
 }
 
 function install_gcp() { #HELP Install GCP SDK:\nBOCKER gcp
-	echo "deb [ signed-by=/usr/share/keyrings/cloud.google.gpg ] https://packages.cloud.google.com/apt cloud-sdk main" | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
+	echo "deb [ signed-by=/usr/share/keyrings/cloud.google.gpg ] https://packages.cloud.google.com/apt cloud-sdk main" \
+	| sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
 	if [ "$(lsb_release -r | tr -d '.' | cut -f2)" -le  "2110" ]
-	then
-	curl https://packages.cloud.google.com/apt/doc/apt-key.gpg \
-	| sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
-  else 
-	curl https://packages.cloud.google.com/apt/doc/apt-key.gpg \
-	| sudo tee /usr/share/keyrings/cloud.google.gpg
-  fi
-  update_sourcelist
-  sudo apt install google-cloud-cli kubeclt
-  sudo sh -c 'kubectl completion bash >/etc/bash_completion.d/kubectl'
+	  then
+	  curl https://packages.cloud.google.com/apt/doc/apt-key.gpg \
+	  | sudo apt-key --keyring /usr/share/keyrings/cloud.google.gpg add -
+	  else 
+	  curl https://packages.cloud.google.com/apt/doc/apt-key.gpg \
+	  | sudo tee /usr/share/keyrings/cloud.google.gpg
+  	fi
+  	update_sourcelist
+  	sudo apt install google-cloud-cli kubeclt
+  	sudo sh -c 'kubectl completion bash >/etc/bash_completion.d/kubectl'
 	if [ ! grep -q __start_kubectl ~/.bashrc ];then
 	  echo 'complete -F __start_kubectl k' >>~/.bashrc 
 	  echo autocomplition for k added
@@ -131,7 +130,7 @@ function install_golang() { #HELP Install Golang:\nBOCKER golang
 function install_java() { #HELP Install Oracle Java 17:\nBOCKER java
 	[ -d /opt/java ] && sudo rm -rf /opt/java/* || sudo mkdir -p /opt/java
 	local url='https://download.oracle.com/java/17/latest/jdk-17_linux-x64_bin.tar.gz'
-  sudo wget -O- $url | sudo tar xz -C /opt/java --strip-components 1
+  	sudo wget -O- $url | sudo tar xz -C /opt/java --strip-components 1
 	update-alternatives --install /usr/bin/java java /opt/java/bin/java 2000
 	if ! grep -q JAVA_HOME ~/.bashrc ;then
 	  { echo 'export JAVA_HOME=/opt/java #Java'
@@ -217,9 +216,9 @@ code --install-extension formulahendry.code-runner
 code --install-extension rangav.vscode-thunder-client
 
 # Gnome settigns
-sudo apt install gnome-tweaks gnome-shell-extension-dash-to-panel \
+sudo apt install git gnome-tweaks gnome-shell-extension-dash-to-panel \
 gnome-screenshot xclip wl-clipboard doublecmd-gtk jq mupdf keepassx \
-p7zip-full git fzf
+p7zip-full fzf
 # LF file manager
 curl -L https://github.com/gokcehan/lf/releases/latest/download/lf-linux-amd64.tar.gz | tar xzC ~/.local/bin
 echo '
@@ -261,7 +260,7 @@ Pin-Priority: -10" | sudo tee /etc/apt/preferences.d/nosnap.pref
 
 [[ -z "${1-}" ]] && install_help "$0" && exit 1
 case $1 in
-	androidsdk|codium|k9s|golang|gh|misc|podman\
+	all|androidsdk|codium|k9s|golang|gh|misc|podman\
 	|run|exec|terraform|warp|zoom) install_"$1" "${@:2}" ;;
 	*) install_help "$0" ;;
 esac
