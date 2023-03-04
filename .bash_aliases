@@ -72,6 +72,7 @@ alias ffprobe='ffprobe -hide_banner'
 alias pofu="python3 ~/prj/py/put_one_folder_up.py"
 alias zr="python3 ~/prj/py/zero_renamer.py"
 function audioToOpus { ffmpeg -i "$2" -c:a libopus -b:a "$1" "${2%.*}.opus" ; }
+alias mp3opus='for f in *.mp3; do ffmpeg -i "$f" -c:a libopus -b:a 32k "${f%.mp3}.opus"; done'
 alias mp4mp3='for f in *.mp4; do ffmpeg -i "$f" -acodec libmp3lame -vn -b:a 64k "${f%.mp4}.mp3"; done'
 alias mp3con='ls *.mp3;sleep 4;ffmpeg -f concat -safe 0 -i <(for f in ./*.mp3; do echo "file '"'"'$PWD/$f'"'"'"; done) -c copy "${PWD##*/}".mp3'
 alias mp4con='ls *.mp4;sleep 4;ffmpeg -f concat -safe 0 -i <(for f in ./*.mp4; do echo "file '"'"'$PWD/$f'"'"'"; done) -c copy "${PWD##*/}".mp4'
