@@ -80,7 +80,7 @@ alias mp4small='shopt -s globstar; for f in **/*.mp4 ; do nice -n 10 ffmpeg -i "
 alias mp4fhd='shopt -s globstar; for f in **/*.mp4 ; do nice -n 10 ffmpeg -i "$f" -c:v libx265 -crf 40  -preset fast -vf "fps=5,scale=w=1920:h=1080:force_original_aspect_ratio=decrease" -c:a aac -b:a 64k "${f%.*}_small.mp4"; done'
 alias mp4remove='ls -Q **/*mp4 | egrep  -v *small.mp4\"$ | xargs rm'
 
-alias png2jpg='for i in *.png ; do convert "$i" "${i%.*}.jpg" ; done'
+alias png2jpg='for i in *.png ; do convert -quality 80% "$i" "${i%.*}.jpg" ; done'
 
 # System
 alias auu='sudo apt update && sudo apt upgrade'
