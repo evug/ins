@@ -61,7 +61,8 @@ alias up="ip -f inet addr show tun0 | echo \"http://\`grep -Po 'inet \K[\d.]+'\`
 PS1='\[\033[0;32m\]\[\033[0m\033[0;32m\]\u\[\033[0;36m\] @ \[\033[0;36m\]\h \w\[\033[0;32m\]$(__git_ps1)\n\[\033[0;32m\]└─\[\033[0m\033[0;32m\] \$\[\033[0m\033[0;32m\] ▶\[\033[0m\] '
 
 # Python
-alias pvec="python3 -m venv venv --system-site-packages"
+alias pvecd="python3 -m venv ~/.${PWD##*/}"
+alias pvecl="python3 -m venv venv --system-site-packages"
 alias pvea="deactivate &> /dev/null; surce ./venv/bin/activate"
 alias pved="deactivate"
 
