@@ -230,6 +230,11 @@ function install_all() { #HELP Install Everything here:\nBOCKER all
   gnome-screenshot xclip wl-clipboard doublecmd-gtk jq mupdf keepassx \
   p7zip-full fzf helix
   
+  # Video 
+  sudo add-apt-repository ppa:obsproject/obs-studio
+  update_sourcelist
+  sudo apt install ffmpeg obs-studio
+  
   # LF file manager
   curl -L https://github.com/gokcehan/lf/releases/latest/download/lf-linux-amd64.tar.gz | tar xzC ~/.local/bin
   echo '
@@ -241,7 +246,7 @@ function install_all() { #HELP Install Everything here:\nBOCKER all
   gsettings set org.gnome.desktop.interface show-battery-percentage true
   gsettings set org.gnome.desktop.wm.keybindings switch-input-source "['<Shift>Alt_L']"
   gsettings set org.gnome.desktop.wm.keybindings switch-input-source-backward "['<Alt>Shift_L']"
-  gsettings set org.gnome.desktop.input-sources xkb-options "['caps:swapescape']"
+  gsettings set org.gnome.desktop.input-sources xkb-options "['caps:escape']"
 
   git config --global user.name $USER
   git config --global user.email johndoe@example.com
