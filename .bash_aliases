@@ -55,7 +55,6 @@ alias mkcd='f() { mkdir -p -- "$1" && cd -P -- "$1"; unset -f f; }; f'
 # Network
 alias furl='curl --silent --location --head --output /dev/null --write-out %{url_effective} --'
 alias myip='curl ipinfo.io'
-alias up="ip -f inet addr show tun0 | echo \"http://\`grep -Po 'inet \K[\d.]+'\`/\"; echo $PWD; python3 -m http.server"
 
 # Prompt
 PS1='\[\033[0;32m\]\[\033[0m\033[0;32m\]\u\[\033[0;36m\] @ \[\033[0;36m\]\h \w\[\033[0;32m\]$(__git_ps1)\n\[\033[0;32m\]└─\[\033[0m\033[0;32m\] \$\[\033[0m\033[0;32m\] ▶\[\033[0m\] '
