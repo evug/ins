@@ -177,7 +177,7 @@ function install_terraform() { #HELP Install Terraform:\nBOCKER terraform
   fi
   echo "Installing Terraform $version"
   local tmp_zip="$(mktemp)"
-  wget "$URL" -O $tmp_zip
+  wget "$src_url" -O "$tmp_zip"
   sudo unzip -o $tmp_zip -d /opt
   sudo ln -s /opt/terraform /usr/local/bin/terraform || true
   rm $tmp_zip
