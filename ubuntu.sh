@@ -88,8 +88,8 @@ function install_gh() { #HELP Install GitHub Cli:\nBOCKER gh
 }
 
 function install_golang() { #HELP Install Golang:\nBOCKER golang
-  local URL=$(wget -qO- https://golang.org/dl/ | grep -oP '\/dl\/go([0-9\.]+)\.linux-amd64\.tar\.gz' | head -1 )
-  local VERSION=$(echo $URL | grep -Po '(?<=go)\d+.\d+.?\d+')
+  local url=$(wget -qO- https://golang.org/dl/ | grep -oP '\/dl\/go([0-9\.]+)\.linux-amd64\.tar\.gz' | head -1 )
+  local VERSION=$(echo $url | grep -Po '(?<=go)\d+.\d+.?\d+')
   if type go 1>/dev/null;then
     local INSTALLED=$(go version | grep -Po '\d+.\d+.?\d+')
     if [ "$VERSION" = "$INSTALLED" ]; then
@@ -105,14 +105,12 @@ function install_golang() { #HELP Install Golang:\nBOCKER golang
     sudo ln -s /opt/go/bin/gofmt /usr/local/bin/gofmt
   fi
 
-  sudo wget -O- "https://golang.org$URL" | sudo tar xz -C /opt
-  mkdir -p ~/go/bin
-  mkdir -p ~/go/pkg
-  mkdir -p ~/go/src
+  sudo wget -O- "https://golang.org$url" | sudo tar xz -C /opt
+  mkdir -p "$HOME/go/{bin,pkg,src}"
 
   if ! grep -q GOPATH ~/.bashrc ;then
-    { echo 'export GOPATH=~/go #GoLang'
-      echo 'export PATH=$PATH:$GOPATH/bin #GoLang'
+    { echo 'export GOPATH=$HOME/go #GoLang'
+      echo 'export PATH=$PATH:/opt/go/bin:$GOPATH/bin #GoLang'
     } >> ~/.bashrc
     echo 'GOPATH added to PATH'
   fi
