@@ -89,15 +89,15 @@ function install_gh() { #HELP Install GitHub Cli:\nBOCKER gh
 
 function install_golang() { #HELP Install Golang:\nBOCKER golang
   local url=$(wget -qO- https://golang.org/dl/ | grep -oP '\/dl\/go([0-9\.]+)\.linux-amd64\.tar\.gz' | head -1 )
-  local VERSION=$(echo $url | grep -Po '(?<=go)\d+.\d+.?\d+')
+  local version=$(echo $url | grep -Po '(?<=go)\d+.\d+.?\d+')
   if type go 1>/dev/null;then
-    local INSTALLED=$(go version | grep -Po '\d+.\d+.?\d+')
-    if [ "$VERSION" = "$INSTALLED" ]; then
+    local installed=$(go version | grep -Po '\d+.\d+.?\d+')
+    if [ "$version" = "$installed" ]; then
       echo "There\'s no need to update"
       exit 0
     fi
   fi
-  echo "Installing Golang $VERSION"
+  echo "Installing Golang $version"
   if [ -d /opt/go ];then
     sudo rm -rf /opt/go
   else
