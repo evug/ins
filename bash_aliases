@@ -107,5 +107,13 @@ tre() { [[ "$1" ]] || { echo "Error: Missing the phrase to translate" >&2; retur
             -d "target_lang=EN" \
       | jq .translations[0].text
 }
-alias трф=trf
-alias трe=tre
+trr() { [[ "$1" ]] || { echo "Error: Missing the phrase to translate" >&2; return 1; }
+      curl -s -X POST 'https://api-free.deepl.com/v2/translate' \
+            -H "Authorization: DeepL-Auth-Key $LLLLL" \
+            -d "text=$*" \
+            -d "target_lang=RU" \
+      | jq .translations[0].text
+}
+alias ф=trf
+alias а=tre
+alias t=trr
