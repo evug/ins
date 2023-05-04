@@ -100,4 +100,11 @@ tra() { [[ "$1" ]] || { echo "Error: Missing the phrase to translate" >&2; retur
             -d "target_lang=FR" \
       | jq .translations[0].text
 }
+tre() { [[ "$1" ]] || { echo "Error: Missing the phrase to translate" >&2; return 1; }
+      curl -s -X POST 'https://api-free.deepl.com/v2/translate' \
+            -H "Authorization: DeepL-Auth-Key $LLLLL" \
+            -d "text=$*" \
+            -d "target_lang=EN" \
+      | jq .translations[0].text
+}
 alias тра=tra
