@@ -117,3 +117,5 @@ trr() { [[ "$1" ]] || { echo "Error: Missing the phrase to translate" >&2; retur
 alias ф=trf
 alias а=tre
 alias t=trr
+alias f=trf
+alias e=tre
