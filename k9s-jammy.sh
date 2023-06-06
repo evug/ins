@@ -5,11 +5,10 @@ if [ "$(lsb_release -cs)" != "jammy" ]; then
 fi
 sudo apt-get update
 sudo apt-get install -y apt-transport-https ca-certificates curl git jq
-sudo curl -fSLo /etc/apt/keyrings/kubernetes-archive-keyring.gpg https://packages.cloud.google.com/apt/doc/apt-key.gpg
+curl -fsSL https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo gpg --dearmor -o /etc/apt/keyrings/kubernetes-archive-keyring.gpg
 echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://apt.kubernetes.io/ kubernetes-xenial main" \
-  | sudo tee /etc/apt/sources.list.d/kubernetes.list
-sudo apt-get update -o Dir::Etc::sourcelist="sources.list.d/kubernetes.list" \
-  -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
+| sudo tee /etc/apt/sources.list.d/kubernetes.list
+sudo apt-get update -o Dir::Etc::sourcelist="sources.list.d/kubernetes.list" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
 
 version=$(apt-cache policy kubeadm | grep Candidate | awk '{print $2}')
 echo "Installing kubernetes ${version%-*}"
