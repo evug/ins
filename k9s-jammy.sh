@@ -1,7 +1,7 @@
 #!/bin/sh
 set -x
 if [ "$(lsb_release -cs)" != "jammy" ]; then
-  echo "This script works only in Ubuntu 22.10"; exit 1
+  echo "This script is only for Ubuntu 22.10"; exit 1
 fi
 sudo apt-get update
 sudo apt-get install -y apt-transport-https ca-certificates curl git jq
@@ -12,7 +12,7 @@ sudo apt-get update -o Dir::Etc::sourcelist="sources.list.d/kubernetes.list" \
   -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
 
 version=$(apt-cache policy kubeadm | grep Candidate | awk '{print $2}')
-echo "Installing kubernetes $version"
+echo "Installing kubernetes ${version%-*}"
 
 sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
@@ -47,8 +47,8 @@ sudo sed -i 's/SystemdCgroup \= false/SystemdCgroup \= true/g' /etc/containerd/c
 sudo systemctl restart containerd
 sudo systemctl enable kubelet
 echo "image pull and cluster setup"
-sudo kubeadm config images pull --cri-socket unix:///run/containerd/containerd.sock --kubernetes-version v1.27.1
-sudo kubeadm init   --pod-network-cidr=10.244.0.0/16   --upload-certs --kubernetes-version=v1.27.1  --control-plane-endpoint=$(hostname) --ignore-preflight-errors=all  --cri-socket unix:///run/containerd/containerd.sock
+sudo kubeadm config images pull --cri-socket unix:///run/containerd/containerd.sock --kubernetes-version v"${version%-*}"
+sudo kubeadm init   --pod-network-cidr=10.244.0.0/16   --upload-certs --kubernetes-version=v"${version%-*}"  --control-plane-endpoint=$(hostname) --ignore-preflight-errors=all  --cri-socket unix:///run/containerd/containerd.sock
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
