@@ -11,8 +11,8 @@ echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://a
 sudo apt-get update -o Dir::Etc::sourcelist="sources.list.d/kubernetes.list" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
 
 version=$(apt-cache policy kubeadm | grep Candidate | awk '{print $2}')
-echo "Installing kubernetes ${version%-*}"
-
+echo "Installing kubernetes ${version%-*}" 
+sleep 5
 sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
 
