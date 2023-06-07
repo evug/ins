@@ -11,20 +11,19 @@ echo "deb [signed-by=/etc/apt/keyrings/kubernetes-archive-keyring.gpg] https://a
 sudo apt-get update -o Dir::Etc::sourcelist="sources.list.d/kubernetes.list" -o Dir::Etc::sourceparts="-" -o APT::Get::List-Cleanup="0"
 
 version=$(apt-cache policy kubeadm | grep Candidate | awk '{print $2}')
-echo "Installing kubernetes ${version%-*}" 
+echo -e "\e[1;32mInstalling Kubernetes ${version%-*}\e[0m"
 sleep 5
 sudo apt-get install -y kubelet kubeadm kubectl
 sudo apt-mark hold kubelet kubeadm kubectl
 
-
-echo "Turn off swap"
+echo -e "\e[1;32mTurn off swap\e[0m"
 sudo sed -i '/ swap / s/^\(.*\)$/#\1/g' /etc/fstab
 sudo swapoff -a
 
 sudo modprobe overlay
 sudo modprobe br_netfilter
 
-echo "Containerd"
+echo -e "\e[1;32mContainerd\e[0m"
 sudo tee /etc/modules-load.d/containerd.conf<<EOF
 overlay
 br_netfilter
@@ -48,13 +47,14 @@ sudo systemctl enable containerd
 sudo sed -i 's/SystemdCgroup \= false/SystemdCgroup \= true/g' /etc/containerd/config.toml
 sudo systemctl restart containerd
 sudo systemctl enable kubelet
-echo "image pull and cluster setup"
+
+echo -e "\e[1;32mPulling images\e[0m"
 sudo kubeadm config images pull --cri-socket unix:///run/containerd/containerd.sock --kubernetes-version v"${version%-*}"
 sudo kubeadm init   --pod-network-cidr=10.244.0.0/16   --upload-certs --kubernetes-version=v"${version%-*}"  --control-plane-endpoint=$(hostname) --ignore-preflight-errors=all  --cri-socket unix:///run/containerd/containerd.sock
 mkdir -p $HOME/.kube
 sudo cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
 sudo chown $(id -u):$(id -g) $HOME/.kube/config
 # export KUBECONFIG=/etc/kubernetes/admin.conf
-echo "Apply flannel network"
+echo -e "\e[1;32mFlannel network\e[0m"
 kubectl apply -f https://github.com/coreos/flannel/raw/master/Documentation/kube-flannel.yml
 kubectl taint node $(hostname) node-role.kubernetes.io/control-plane:NoSchedule-
