@@ -56,7 +56,19 @@ function install_chrome() { #HELP Install Google Chrome:\nBOCKER chrome
   update_sourcelist
   sudo apt install google-chrome-stable
 }
-
+function install_firefox() { #HELP Install Firefox:\nBOCKER firefox
+  sudo snap remove firefox || true
+  sudo add-apt-repository ppa:mozillateam/ppa
+  echo '
+  Package: *
+  Pin: release o=LP-PPA-mozillateam
+  Pin-Priority: 1001
+  ' | sudo tee /etc/apt/preferences.d/mozilla-firefox
+  echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' \
+  | sudo tee /etc/apt/apt.conf.d/51unattended-upgrades-firefox
+  update_sourcelist
+  sudo apt install firefox
+}
 function install_gcpsdk() { #HELP Install GCP SDK:\nBOCKER gcpsdk
   echo "deb [ signed-by=/usr/share/keyrings/cloud.google.gpg ] https://packages.cloud.google.com/apt cloud-sdk main" \
   | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
@@ -208,7 +220,22 @@ function install_warp() { #HELP Install cloudflare:\nBOCKER warp
 }
 
 function install_all() { #HELP Install Everything here:\nBOCKER all
- 
+  install_misc
+  install_androidsdk
+  install_chrome
+  install_code
+  install_codium
+  install_firefox
+  install_gcpsdk
+  install_gh
+  install_golang
+  install_java
+  insatll_k9s
+  install_podman
+  install_terraform
+  install_wrap
+  install_zoom
+  
   # VS Code plugins
   code --install-extension Dart-Code.flutter
   code --install-extension pkief.material-icon-theme
@@ -262,22 +289,7 @@ function install_all() { #HELP Install Everything here:\nBOCKER all
 # sudo ufw allow shh
 # sudo ufw enable
 
-  install_misc
-  install_androidsdk
-  install_chrome
-  install_code
-  install_codium
-  install_gcpsdk
-  install_gh
-  install_golang
-  install_java
-  insatll_k9s
-  install_podman
-  install_terraform
-  install_wrap
-  install_zoom
-  
-  # Remove snap
+# Remove snap
   sudo systemctl stop snapd && sudo systemctl disable snapd && sudo apt purge snapd gnome-software-plugin-snap
   sudo rm -rf ~/snap
   sudo rm -rf /snap /var/snap /var/lib/snapd /var/cache/snapd /usr/lib/snapd
@@ -290,7 +302,7 @@ Pin-Priority: -10" | sudo tee /etc/apt/preferences.d/nosnap.pref
 
 [[ -z "${1-}" ]] && install_help "$0" && exit 1
 case $1 in
-  all|androidsdk|chrome|code|codium|golang|gcpsdk|gh|java|k9s|misc|podman\
+  all|androidsdk|chrome|code|codium|firefox|golang|gcpsdk|gh|java|k9s|misc|podman\
   |terraform|warp|zoom) install_"$1" "${@:2}" ;;
   *) install_help "$0" ;;
 esac
