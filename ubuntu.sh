@@ -281,6 +281,7 @@ function install_all() { #HELP Install Everything here:\nBOCKER all
   git config --global push.followTags true
   git config --global --add --bool rebase.updateRefs true
   git config --global --add --bool push.autoSetupRemote true
+  git config --global url."ssh://git@github.com".insteadOf "https://github.com"
 
 # Security
 # sudo chmod 0750 ~
