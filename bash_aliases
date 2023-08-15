@@ -78,7 +78,7 @@ alias mp3opus='for f in *.mp3; do nice -n 10 ffmpeg -i "$f" -c:a libopus -b:a 32
 alias mp4mp3='for f in *.mp4; do nice -n 10 ffmpeg -i "$f" -acodec libmp3lame -vn -b:a 64k "${f%.mp4}.mp3"; done'
 alias mp3con='ls *.mp3;sleep 4; nice -n 10 ffmpeg -f concat -safe 0 -i <(for f in ./*.mp3; do echo "file '"'"'$PWD/$f'"'"'"; done) -c copy "${PWD##*/}".mp3'
 alias mp4con='ls *.mp4;sleep 4; nice -n 10 ffmpeg -f concat -safe 0 -i <(for f in ./*.mp4; do echo "file '"'"'$PWD/$f'"'"'"; done) -c copy "${PWD##*/}".mp4'
-alias mp4small='shopt -s globstar; for f 'n **/*.mp4 ; do nice -n 10 ffmpeg -i "$f" -c:v libx265 -crf 40  -preset fast -vf "fps=5" -c:a aac -b:a 64k "${f%.*}_small.mp4"; done'
+alias mp4small='shopt -s globstar; for f in **/*.mp4 ; do nice -n 10 ffmpeg -i "$f" -c:v libx265 -crf 40  -preset fast -vf "fps=5" -c:a aac -b:a 64k "${f%.*}_small.mp4"; done'
 alias mp4fhd='shopt -s globstar; for f in **/*.mp4 ; do nice -n 10 ffmpeg -i "$f" -c:v libx265 -crf 40  -preset fast -vf "fps=5,scale=w=1920:h=1080:force_original_aspect_ratio=decrease" -c:a aac -b:a 64k "${f%.*}_small.mp4"; done'
 alias mp4remove='shopt -s globstar; ls -Q **/*mp4 | egrep  -v *small.mp4\"$ | xargs rm'
 alias png2jpg='for i in *.png ; do convert -quality 80% "$i" "${i%.*}.jpg" ; done'
