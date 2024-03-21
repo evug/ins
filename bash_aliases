@@ -64,6 +64,7 @@ alias pvecd="python3 -m venv ~/.${PWD##*/}"
 alias pvecl="python3 -m venv venv --system-site-packages"
 alias pvea="deactivate &> /dev/null; surce ./venv/bin/activate"
 alias pved="deactivate"
+
 # Rust
 alias c='cargo'
 
@@ -86,6 +87,7 @@ alias yt-dlpr='yt-dlp --restrict-filenames'
 
 # System
 alias auu='sudo apt update && sudo apt upgrade'
+alias cb='xclip -selection clipboard'
 alias h=history
 alias empty-trash='rm -rf ~/.local/share/Trash/*'
 alias inf="uname -sr && uptime|sed 's/ //' && lscpu|grep 'CPU MHz:' && acpi && \
