@@ -31,6 +31,29 @@ function install_androidsdk() { #HELP Display this message:\nBOCKER androidsdk
   fi
 }
 
+function install_qbittorrent() { #HELP Display this message:\nBOCKER qbittorrent
+  sudo apt install qbittorrent-nox
+  sudo adduser --home=/home/qb --system --group qbittorrent-nox
+  sudo adduser $USER qbittorrent-nox
+  echo '
+[Unit]
+Description=qBittorrent Command Line Client
+After=network.target
+
+[Service]
+Type=forking
+User=qbittorrent-nox
+Group=qbittorrent-nox
+UMask=007
+ExecStart=/usr/bin/qbittorrent-nox -d --webui-port=8080
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+  '| sudo tee /etc/systemd/system/qbittorrent-nox.service 
+sudo systemctl enable qbittorrent-nox --now
+}
+
 function install_code() { #HELP Install Code:\nBOCKER code
   wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
   sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
@@ -303,7 +326,7 @@ Pin-Priority: -10" | sudo tee /etc/apt/preferences.d/nosnap.pref
 
 [[ -z "${1-}" ]] && install_help "$0" && exit 1
 case $1 in
-  all|androidsdk|chrome|code|codium|firefox|golang|gcpsdk|gh|java|k9s|misc|podman\
+  all|androidsdk|qbittorrent|chrome|code|codium|firefox|golang|gcpsdk|gh|java|k9s|misc|podman\
   |terraform|warp|zoom) install_"$1" "${@:2}" ;;
   *) install_help "$0" ;;
 esac
