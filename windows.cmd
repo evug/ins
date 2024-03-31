@@ -10,3 +10,4 @@ winget install -e Google.Chrome
 winget install -e Git.Git
 winget install -e Gyan.FFmpeg.Essentials
 winget install -e KeePassXCTeam.KeePassXC
+winget install -e SamHocevar.WinCompose
