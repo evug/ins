@@ -9,5 +9,4 @@ winget install -e Microsoft.PowerShell
 winget install -e Google.Chrome
 winget install -e Git.Git
 winget install -e Gyan.FFmpeg.Essentials
-winget install -e RandyRants.SharpKeys
 winget install -e KeePassXCTeam.KeePassXC
