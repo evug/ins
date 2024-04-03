@@ -17,7 +17,7 @@ function install_androidsdk() { #HELP Display this message:\nBOCKER androidsdk
   url='https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip'
   [ -d /opt/android ] && sudo rm -rf /opt/android/* || sudo mkdir -p /opt/android
   local tmp_zip="$(mktemp)"
-  wget --secure-protocol=TLSv1_2 "$url" -O "$tmp_zip"
+  wget --show-progress "$url" -qO "$tmp_zip"
   sudo unzip -o "$tmp_zip" -d /opt/android
   sudo mkdir -p /opt/android/cmdline-tools/latest
   sudo mv $(ls /opt/android/cmdline-tools/ | grep -v latest) /opt/android/cmdline-tools/latest
@@ -55,14 +55,14 @@ sudo systemctl enable qbittorrent-nox --now
 }
 
 function install_code() { #HELP Install Code:\nBOCKER code
-  wget --secure-protocol=TLSv1_2 -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
+  wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
   sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
   sudo sh -c 'echo "deb [arch=amd64,arm64,armhf signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" > /etc/apt/sources.list.d/vscode.list'
   rm -f packages.microsoft.gpg
 }
 
 function install_codium() { #HELP Install Codium:\nBOCKER codium
-  wget --secure-protocol=TLSv1_2 -qO- https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg \
+  wget -qO- https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg \
   | gpg --yes --dearmor --output /usr/share/keyrings/vscodium-archive-keyring.gpg
   echo 'deb [ signed-by=/usr/share/keyrings/vscodium-archive-keyring.gpg ] https://download.vscodium.com/debs vscodium main' \
   | sudo tee /etc/apt/sources.list.d/vscodium.list
@@ -71,7 +71,7 @@ function install_codium() { #HELP Install Codium:\nBOCKER codium
 }
 
 function install_chrome() { #HELP Install Google Chrome:\nBOCKER chrome
-  wget --secure-protocol=TLSv1_2 -qO- https://dl-ssl.google.com/linux/linux_signing_key.pub \
+  wget -qO- https://dl-ssl.google.com/linux/linux_signing_key.pub \
   | gpg --dearmor \
   | sudo dd of=/usr/share/keyrings/google-chrome-keyring.gpg
   echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" \
@@ -123,7 +123,7 @@ function install_gh() { #HELP Install GitHub Cli:\nBOCKER gh
 }
 
 function install_golang() { #HELP Install Golang:\nBOCKER golang
-  local url=$(wget --secure-protocol=TLSv1_2 -qO- https://golang.org/dl/ | grep -oP '\/dl\/go([0-9\.]+)\.linux-amd64\.tar\.gz' | head -1 )
+  local url=$(wget --show-progress -qO- https://golang.org/dl/ | grep -oP '\/dl\/go([0-9\.]+)\.linux-amd64\.tar\.gz' | head -1 )
   local version=$(echo $url | grep -Po '(?<=go)\d+.\d+.?\d+')
   if type go 1>/dev/null;then
     local installed=$(go version | grep -Po '\d+.\d+.?\d+')
@@ -140,7 +140,7 @@ function install_golang() { #HELP Install Golang:\nBOCKER golang
     sudo ln -s /opt/go/bin/gofmt /usr/local/bin/gofmt
   fi
 
-  sudo wget --secure-protocol=TLSv1_2 -O- "https://golang.org$url" | sudo tar xz -C /opt
+  sudo wget -O- "https://golang.org$url" | sudo tar xz -C /opt
   mkdir -p "$HOME/go/{bin,pkg,src}"
 
   if ! grep -q GOPATH ~/.bashrc ;then
@@ -155,7 +155,7 @@ function install_golang() { #HELP Install Golang:\nBOCKER golang
 function install_java() { #HELP Install Oracle Java 17:\nBOCKER java
   [ -d /opt/java ] && sudo rm -rf /opt/java/* || sudo mkdir -p /opt/java
   local url='https://download.oracle.com/java/17/latest/jdk-17_linux-x64_bin.tar.gz'
-  sudo wget --secure-protocol=TLSv1_2 -O- $url | sudo tar xz -C /opt/java --strip-components 1
+  sudo wget --show-progress -O- $url | sudo tar xz -C /opt/java --strip-components 1
   update-alternatives --install /usr/bin/java java /opt/java/bin/java 2000
   if ! grep -q JAVA_HOME ~/.bashrc ;then
     { echo 'export JAVA_HOME=/opt/java #Java'
@@ -180,7 +180,7 @@ function install_k9s() { #HELP Install k9s:\nBOCKER k9s
     fi
   fi
   echo k9s $last_version available
-  sudo wget --show-progress --secure-protocol=TLSv1_2 -qO- "https://github.com/$url" \
+  sudo wget --show-progress -qO- "https://github.com/$url" \
   | sudo tar xz -C /usr/local/bin/ --no-same-owner --wildcards --no-anchored 'k9s'
   k9s version
 }
@@ -197,7 +197,7 @@ function install_podman() { #HELP Install Podman:\nBOCKER podman
 }
 
 function install_terraform() { #HELP Install Terraform:\nBOCKER terraform
-  local src_url=$(wget --secure-protocol=TLSv1_2 -qO- https://www.terraform.io/downloads.html \
+  local src_url=$(wget --show-progress -qO- https://www.terraform.io/downloads.html \
   | grep -oP 'https:\/\/releases\.hashicorp\.com\/terraform\/([0-9\.]+)\/terraform_([0-9\.]+)_linux_amd64\.zip'\
   | head -1 )
   local version=$(echo $src_url | grep -Po '(?<=terraform\/)\d+.\d+.?\d+')
@@ -210,7 +210,7 @@ function install_terraform() { #HELP Install Terraform:\nBOCKER terraform
   fi
   echo "Installing Terraform $version"
   local tmp_zip="$(mktemp)"
-  wget --secure-protocol=TLSv1_2 "$src_url" -O "$tmp_zip"
+  wget --show-progress "$src_url" -O "$tmp_zip"
   sudo unzip -o $tmp_zip -d /opt
   sudo ln -s /opt/terraform /usr/local/bin/terraform || true
   rm $tmp_zip
@@ -222,7 +222,7 @@ function install_zoom() { #HELP Install Zoom:\nBOCKER zoom
   local src_url="https://zoom.us/client/latest/zoom_amd64.deb"
   local args=${@:2}
   pkill zoom || true
-  wget --secure-protocol=TLSv1_2 -O $tmp_deb $src_url &&
+  wget --show-progress -O $tmp_deb $src_url &&
   sudo dpkg -i $tmp_deb $args &&
   { rm -f $tmp_deb; true; } || 
   { rm -f $tmp_deb; false; }   # commands above failed, remove tmp file anyway
