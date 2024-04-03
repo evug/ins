@@ -136,8 +136,8 @@ function install_golang() { #HELP Install Golang:\nBOCKER golang
   if [ -d /opt/go ];then
     sudo rm -rf /opt/go
   else
-    sudo ln -s /opt/go/bin/go /usr/local/bin/go
-    sudo ln -s /opt/go/bin/gofmt /usr/local/bin/gofmt
+    sudo ln -fs /opt/go/bin/go /usr/local/bin/go
+    sudo ln -fs /opt/go/bin/gofmt /usr/local/bin/gofmt
   fi
 
   sudo wget -O- "https://golang.org$url" | sudo tar xz -C /opt
