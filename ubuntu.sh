@@ -140,7 +140,7 @@ function install_golang() { #HELP Install Golang:\nBOCKER golang
     sudo ln -fs /opt/go/bin/gofmt /usr/local/bin/gofmt
   fi
 
-  sudo wget -O- "https://golang.org$url" | sudo tar xz -C /opt
+  sudo wget --show-progress -qO- "https://golang.org$url" | sudo tar xz -C /opt
   mkdir -p "$HOME/go/{bin,pkg,src}"
 
   if ! grep -q GOPATH ~/.bashrc ;then
@@ -168,7 +168,7 @@ function install_java() { #HELP Install Oracle Java 17:\nBOCKER java
 }
 
 function install_k9s() { #HELP Install k9s:\nBOCKER k9s
-  local url="$(wget --secure-protocol=TLSv1_2 -qO- https://github.com/derailed/k9s/releases \
+  local url="$(wget --show-progress -qO- https://github.com/derailed/k9s/releases \
   | grep -oP '\/derailed\/k9s\/releases\/download\/v([0-9\.]+)\/k9s_Linux_amd64\.tar\.gz' \
   | head -1 )"
   local last_version=$(echo $url | grep -Po '(?<=download\/v)\d+.\d+.\d+')
