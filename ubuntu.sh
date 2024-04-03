@@ -31,27 +31,15 @@ function install_androidsdk() { #HELP Display this message:\nBOCKER androidsdk
   fi
 }
 
-function install_qbittorrent() { #HELP Display this message:\nBOCKER qbittorrent
-  sudo apt install qbittorrent-nox
-  sudo adduser --home=/home/qb --system --group qbittorrent-nox
-  sudo adduser $USER qbittorrent-nox
-  echo '
-[Unit]
-Description=qBittorrent Command Line Client
-After=network.target
-
-[Service]
-Type=forking
-User=qbittorrent-nox
-Group=qbittorrent-nox
-UMask=007
-ExecStart=/usr/bin/qbittorrent-nox -d --webui-port=8080
-Restart=on-failure
-
-[Install]
-WantedBy=multi-user.target
-  '| sudo tee /etc/systemd/system/qbittorrent-nox.service 
-sudo systemctl enable qbittorrent-nox --now
+function install_awscli() { #HELP Display this message:\nBOCKER awscli
+  echo "Installing AWSCli v2"
+  local tmp_dir="$(mktemp -d)"
+  local src_url='https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip'
+  wget --show-progress "$src_url" -O "$tmp_dir/awscliv2.zip"
+  # curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+  unzip "$tmp_dir/awscliv2.zip"
+  sudo "$tmp_dir/aws/install"
+  rm "$tmp_dir"
 }
 
 function install_code() { #HELP Install Code:\nBOCKER code
@@ -232,6 +220,29 @@ function install_misc() { #HELP Install small things:\nBOCKER misc
   sudo apt install apt-transport-https curl gnupg ca-certificates bash-completion git
 }
 
+function install_qbittorrent() { #HELP Display this message:\nBOCKER qbittorrent
+  sudo apt install qbittorrent-nox
+  sudo adduser --home=/home/qb --system --group qbittorrent-nox
+  sudo adduser $USER qbittorrent-nox
+  echo '
+[Unit]
+Description=qBittorrent Command Line Client
+After=network.target
+
+[Service]
+Type=forking
+User=qbittorrent-nox
+Group=qbittorrent-nox
+UMask=007
+ExecStart=/usr/bin/qbittorrent-nox -d --webui-port=8080
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target
+  '| sudo tee /etc/systemd/system/qbittorrent-nox.service 
+  sudo systemctl enable qbittorrent-nox --now
+}
+
 function install_warp() { #HELP Install cloudflare:\nBOCKER warp
   curl https://pkg.cloudflareclient.com/pubkey.gpg \
   | sudo gpg --yes --dearmor --output /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg
@@ -326,7 +337,7 @@ Pin-Priority: -10" | sudo tee /etc/apt/preferences.d/nosnap.pref
 
 [[ -z "${1-}" ]] && install_help "$0" && exit 1
 case $1 in
-  all|androidsdk|qbittorrent|chrome|code|codium|firefox|golang|gcpsdk|gh|java|k9s|misc|podman\
-  |terraform|warp|zoom) install_"$1" "${@:2}" ;;
+  all|androidsdk|awscli|chrome|code|codium|firefox|golang|gcpsdk|gh|java|k9s|misc|podman\
+  |terraform|qbittorrent|warp|zoom) install_"$1" "${@:2}" ;;
   *) install_help "$0" ;;
 esac
