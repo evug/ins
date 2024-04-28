@@ -27,7 +27,6 @@ function install_androidsdk() { #HELP Display this message:\nBOCKER androidsdk
       echo 'export ANDROID_SDK_ROOT=$ANDROID_HOME/cmdline-tools #Android'
     } >> ~/.bashrc
     echo 'ANDROID_HOME added to PATH'
-    source ~/.bashrc
   fi
 }
 
@@ -150,7 +149,6 @@ function install_java() { #HELP Install Oracle Java 17:\nBOCKER java
       echo 'export PATH=$PATH:$JAVA_HOME/bin #Java'
     } >> ~/.bashrc
     echo 'JAVA_HOME added to PATH'
-    source ~/.bashrc
   fi
   java --version
 }
