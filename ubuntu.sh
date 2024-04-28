@@ -305,7 +305,7 @@ function install_all() { #HELP Install Everything here:\nBOCKER all
   gsettings set org.gnome.desktop.interface show-battery-percentage true
   gsettings set org.gnome.desktop.wm.keybindings switch-input-source "['<Shift>Alt_L']"
   gsettings set org.gnome.desktop.wm.keybindings switch-input-source-backward "['<Alt>Shift_L']"
-  gsettings set org.gnome.desktop.input-sources xkb-options "['caps:escape']"
+  gsettings set org.gnome.desktop.input-sources xkb-options "['caps:swapescape']"
 
   git config --global user.name $USER
   git config --global user.email johndoe@example.com
