@@ -242,10 +242,11 @@ WantedBy=multi-user.target
 }
 
 function install_warp() { #HELP Install cloudflare:\nBOCKER warp
-  curl https://pkg.cloudflareclient.com/pubkey.gpg \
-  | sudo gpg --yes --dearmor --output /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg
-  echo "deb [arch=amd64 signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ $(lsb_release -cs) main" \
-  | sudo tee /etc/apt/sources.list.d/cloudflare-client.list
+  curl -fsSL https://pkg.cloudflareclient.com/pubkey.gpg \
+    | sudo gpg --yes --dearmor --output /usr/share/keyrings/cloudflare-warp-archive-keyring.gpg
+  echo "deb [signed-by=/usr/share/keyrings/cloudflare-warp-archive-keyring.gpg] https://pkg.cloudflareclient.com/ jammy main" \
+    | sudo tee /etc/apt/sources.list.d/cloudflare-client.list
+  sudo apt-get update && sudo apt-get install cloudflare-warp
   update_sourcelist
   sudo apt install cloudflare-warp
   warp-cli register
@@ -304,6 +305,7 @@ function install_all() { #HELP Install Everything here:\nBOCKER all
   gsettings set org.gnome.desktop.wm.keybindings switch-input-source "['<Shift>Alt_L']"
   gsettings set org.gnome.desktop.wm.keybindings switch-input-source-backward "['<Alt>Shift_L']"
   gsettings set org.gnome.desktop.input-sources xkb-options "['caps:swapescape']"
+  gsettings set org.gnome.desktop.wm.preferences num-workspaces 1
 
   git config --global user.name $USER
   git config --global user.email johndoe@example.com
