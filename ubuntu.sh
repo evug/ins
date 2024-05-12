@@ -1,5 +1,6 @@
 #!/bin/bash
 set -euxo pipefail
+local arch=$(dpkg --print-architecture)
 
 function update_sourcelist() {
   local slist_file=$(ls -t /etc/apt/sources.list.d/ | head -n 1)
@@ -44,7 +45,7 @@ function install_awscli() { #HELP Display this message:\nBOCKER awscli
 function install_code() { #HELP Install Code:\nBOCKER code
   wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
   sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
-  echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" \
+  echo "deb [arch=$arch signed-by=/etc/apt/keyrings/packages.microsoft.gpg] https://packages.microsoft.com/repos/code stable main" \
   | sudo tee /etc/apt/sources.list.d/vscode.list
   rm -f packages.microsoft.gpg
 }
@@ -52,7 +53,7 @@ function install_code() { #HELP Install Code:\nBOCKER code
 function install_codium() { #HELP Install Codium:\nBOCKER codium
   wget -qO- https://gitlab.com/paulcarroty/vscodium-deb-rpm-repo/raw/master/pub.gpg \
   | gpg --yes --dearmor --output /usr/share/keyrings/vscodium-archive-keyring.gpg
-  echo 'deb [ signed-by=/usr/share/keyrings/vscodium-archive-keyring.gpg ] https://download.vscodium.com/debs vscodium main' \
+  echo "deb [arch=$arch signed-by=/usr/share/keyrings/vscodium-archive-keyring.gpg ] https://download.vscodium.com/debs vscodium main" \
   | sudo tee /etc/apt/sources.list.d/vscodium.list
   update_sourcelist
   sudo apt install codium
@@ -62,7 +63,7 @@ function install_chrome() { #HELP Install Google Chrome:\nBOCKER chrome
   wget -qO- https://dl-ssl.google.com/linux/linux_signing_key.pub \
   | gpg --dearmor \
   | sudo dd of=/usr/share/keyrings/google-chrome-keyring.gpg
-  echo "deb [arch=amd64 signed-by=/usr/share/keyrings/google-chrome-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" \
+  echo "deb [arch=$arch signed-by=/usr/share/keyrings/google-chrome-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" \
   | sudo tee /etc/apt/sources.list.d/google-chrome.list
   update_sourcelist
   sudo apt install google-chrome-stable
@@ -81,7 +82,7 @@ function install_firefox() { #HELP Install Firefox:\nBOCKER firefox
   sudo apt install firefox
 }
 function install_gcpsdk() { #HELP Install GCP SDK:\nBOCKER gcpsdk
-  echo "deb [ signed-by=/usr/share/keyrings/cloud.google.gpg ] https://packages.cloud.google.com/apt cloud-sdk main" \
+  echo "deb [arch=$arch signed-by=/usr/share/keyrings/cloud.google.gpg ] https://packages.cloud.google.com/apt cloud-sdk main" \
   | sudo tee -a /etc/apt/sources.list.d/google-cloud-sdk.list
   if [ "$(lsb_release -r | tr -d '.' | cut -f2)" -le  "2110" ]
     then
@@ -104,7 +105,7 @@ function install_gh() { #HELP Install GitHub Cli:\nBOCKER gh
   type -p curl >/dev/null || sudo apt install curl -y
   curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg | sudo dd of=/usr/share/keyrings/githubcli-archive-keyring.gpg \
   && sudo chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
-  && echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main"\
+  && echo "deb [arch=$arch signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main"\
   | sudo tee /etc/apt/sources.list.d/github-cli.list > /dev/null
   update_sourcelist
   sudo apt install gh
@@ -176,11 +177,20 @@ function install_podman() { #HELP Install Podman:\nBOCKER podman
   sudo mkdir -p /etc/apt/keyrings
   curl -fsSL https://download.opensuse.org/repositories/devel:kubic:libcontainers:unstable/xUbuntu_$(lsb_release -rs)/Release.key \
   | sudo gpg --yes --dearmor --output /etc/apt/keyrings/devel_kubic_libcontainers_unstable.gpg
-  echo "deb [arch=amd64 signed-by=/etc/apt/keyrings/devel_kubic_libcontainers_unstable.gpg]\
+  echo "deb [arch=$arch signed-by=/etc/apt/keyrings/devel_kubic_libcontainers_unstable.gpg]\
   https://download.opensuse.org/repositories/devel:kubic:libcontainers:unstable/xUbuntu_$(lsb_release -rs)/ /" \
   | sudo tee /etc/apt/sources.list.d/devel:kubic:libcontainers:unstable.list > /dev/null
   update_sourcelist
   sudo apt install podman
+}
+
+function install_sublime() { #HELP Install Sublime Text 4:\nBOCKER sublime
+  wget -qO- https://download.sublimetext.com/sublimehq-pub.gpg \
+    | gpg --dearmor --yes --output /etc/apt/trusted.gpg.d/sublimehq-archive.gpg
+  echo "deb [arch=$arch signed-by=/etc/apt/trusted.gpg.d/sublimehq-archive.gpg] https://download.sublimetext.com/ apt/stable/" \
+    | sudo tee /etc/apt/sources.list.d/sublime-text.list
+  update_sourcelist
+  sudo apt install sublime-text
 }
 
 function install_terraform() { #HELP Install Terraform:\nBOCKER terraform
@@ -266,6 +276,7 @@ function install_all() { #HELP Install Everything here:\nBOCKER all
   install_java
   insatll_k9s
   install_podman
+  install_sublime
   install_terraform
   install_wrap
   install_zoom
@@ -339,6 +350,6 @@ Pin-Priority: -10" | sudo tee /etc/apt/preferences.d/nosnap.pref
 [[ -z "${1-}" ]] && install_help "$0" && exit 1
 case $1 in
   all|androidsdk|awscli|chrome|code|codium|firefox|golang|gcpsdk|gh|java|k9s|misc|podman\
-  |terraform|qbittorrent|warp|zoom) install_"$1" "${@:2}" ;;
+  |sublime|terraform|qbittorrent|warp|zoom) install_"$1" "${@:2}" ;;
   *) install_help "$0" ;;
 esac
