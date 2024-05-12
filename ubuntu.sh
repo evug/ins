@@ -1,6 +1,6 @@
 #!/bin/bash
 set -euxo pipefail
-local arch=$(dpkg --print-architecture)
+arch=$(dpkg --print-architecture)
 
 function update_sourcelist() {
   local slist_file=$(ls -t /etc/apt/sources.list.d/ | head -n 1)
