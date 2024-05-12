@@ -186,7 +186,7 @@ function install_podman() { #HELP Install Podman:\nBOCKER podman
 
 function install_sublime() { #HELP Install Sublime Text 4:\nBOCKER sublime
   wget -qO- https://download.sublimetext.com/sublimehq-pub.gpg \
-    | gpg --dearmor --yes --output /etc/apt/trusted.gpg.d/sublimehq-archive.gpg
+    | sudo gpg --dearmor --yes --output /etc/apt/trusted.gpg.d/sublimehq-archive.gpg
   echo "deb [arch=$arch signed-by=/etc/apt/trusted.gpg.d/sublimehq-archive.gpg] https://download.sublimetext.com/ apt/stable/" \
     | sudo tee /etc/apt/sources.list.d/sublime-text.list
   update_sourcelist
