@@ -22,11 +22,11 @@ function install_androidsdk() { #HELP Display this message:\nBOCKER androidsdk
   sudo unzip -o "$tmp_zip" -d /opt/android
   sudo mkdir -p /opt/android/cmdline-tools/latest
   sudo mv $(ls /opt/android/cmdline-tools/ | grep -v latest) /opt/android/cmdline-tools/latest
-  if ! grep -q ANDROID_HOME ~/.bashrc ;then
-    { echo 'export ANDROID_HOME=/opt/android #Android'
-      echo 'export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin #Android'
-      echo 'export ANDROID_SDK_ROOT=$ANDROID_HOME/cmdline-tools #Android'
-    } >> ~/.bashrc
+  if ! grep -q ANDROID_HOME ~/.profile ;then
+    { echo 'export ANDROID_HOME="/opt/android" #Android'
+      echo 'export PATH="$PATH:$ANDROID_HOME/cmdline-tools/latest/bin" #Android'
+      echo 'export ANDROID_SDK_ROOT="$ANDROID_HOME/cmdline-tools" #Android'
+    } >> ~/.profile
     echo 'ANDROID_HOME added to PATH'
   fi
 }
@@ -63,7 +63,7 @@ function install_chrome() { #HELP Install Google Chrome:\nBOCKER chrome
   wget -qO- https://dl-ssl.google.com/linux/linux_signing_key.pub \
   | gpg --dearmor \
   | sudo dd of=/usr/share/keyrings/google-chrome-keyring.gpg
-  echo "deb [arch=$arch signed-by=/usr/share/keyrings/google-chrome-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" \
+  echo "deb [signed-by=/usr/share/keyrings/google-chrome-keyring.gpg] http://dl.google.com/linux/chrome/deb/ stable main" \
   | sudo tee /etc/apt/sources.list.d/google-chrome.list
   update_sourcelist
   sudo apt install google-chrome-stable
@@ -80,6 +80,29 @@ function install_firefox() { #HELP Install Firefox:\nBOCKER firefox
   | sudo tee /etc/apt/apt.conf.d/51unattended-upgrades-firefox
   update_sourcelist
   sudo apt install firefox
+}
+function install_flutter() { #HELP Install Flutter:\nBOCKER flutter
+  sudo apt update
+  sudo apt-get install libc6:i386 libncurses5:i386 libstdc++6:i386 lib32z1 libbz2-1.0:i386
+  sudo apt-get install -y curl git unzip xz-utils zip libglu1-mesa
+  echo "Installing Flutter SDK"
+  # local url=$(wget --show-progress -qO- https://golang.org/dl/ | grep -oP '\/dl\/go([0-9\.]+)\.linux-amd64\.tar\.gz' | head -1 )
+  mkdir "$HOME/.android"
+  wget 'https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.22.1-stable.tar.xz'
+  tar -xf flutter_linux_3.22.1-stable.tar.xz -C "$HOME/.android"
+  echo 'export PATH="$PATH:$HOME/.android/flutter/bin" #Flutter' >> ~/.profile
+  
+  echo "Installing Adndroid SDK"
+  local file=$(wget --show-progress -qO- https://developer.android.com/studio \
+    | grep -oP '\/commandlinetools-linux-([0-9]+)_latest\.zip')
+  wget --show-progress "https://dl.google.com/android/repository/$file"
+  unzip "$file" -d "$HOME/.android" && rm "$file"
+  if ! grep -q ANDROID_SDK_ROOT ~/.profile ;then
+  { echo 'export ANDROID_SDK_ROOT="$HOME/.android"'
+    echo 'export PATH="$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/emulator"'
+  } >> ~/.profile
+  echo 'ANDROID_HOME added to PATH'
+  fi
 }
 function install_gcpsdk() { #HELP Install GCP SDK:\nBOCKER gcpsdk
   sudo apt-get update
@@ -114,11 +137,12 @@ google-cloud-cli-skaffold
 google-cloud-cli-spanner-emulator
 google-cloud-cli-terraform-validator
 google-cloud-cli-tests
-kubectl'
+kubectl
+Run "gcloud init"  to get started'
   sudo apt install google-cloud-cli kubeclt
   sudo sh -c 'kubectl completion bash >/etc/bash_completion.d/kubectl'
-  if [ ! grep -q __start_kubectl ~/.bashrc ];then
-    echo 'complete -F __start_kubectl k' >>~/.bashrc 
+  if [ ! grep -q __start_kubectl ~/.profile ];then
+    echo 'complete -F __start_kubectl k' >>~/.profile 
     echo autocomplition for k added
   fi
 }
@@ -154,9 +178,9 @@ function install_golang() { #HELP Install Golang:\nBOCKER golang
   sudo wget --show-progress -qO- "https://golang.org$url" | sudo tar xz -C /opt
   mkdir -p "$HOME/go/{bin,pkg,src}"
 
-  if ! grep -q GOPATH ~/.bashrc ;then
-    { echo 'export GOPATH=$HOME/go #GoLang'
-      echo 'export PATH=$PATH:/opt/go/bin:$GOPATH/bin #GoLang'
+  if ! grep -q GOPATH ~/.profile ;then
+    { echo 'export GOPATH="$HOME/go" #GoLang'
+      echo 'export PATH="$PATH:/opt/go/bin:$GOPATH/bin" #GoLang'
     } >> ~/.bashrc
     echo 'GOPATH added to PATH'
   fi
