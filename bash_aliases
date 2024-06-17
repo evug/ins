@@ -85,6 +85,7 @@ alias mp4smallest='shopt -s globstar; for f in **/*.mp4 ; do nice -n 19 ffmpeg -
 alias mp4erase='shopt -s globstar; for f in **/*.mp4 ; do nice -n 19 ffmpeg -i "$f" -c:v libx265 -crf 40 -preset fast -vf "fps=5" -c:a aac -b:a 64k "${f}_temp"; mv -f "${f}_temp" "${f}"; done'
 alias mp4fhd='shopt -s globstar; for f in **/*.mp4 ; do nice -n 19 ffmpeg -i "$f" -c:v libx265 -crf 40 -preset fast -vf "fps=5,scale=w=1920:h=1080:force_original_aspect_ratio=decrease" -c:a aac -b:a 64k "${f%.*}_small.mp4"; done'
 alias mp4remove='shopt -s globstar; ls -Q **/*mp4 | egrep  -v *small.mp4\"$ | xargs rm'
+alias ts2mp4='for f in *.ts; do nice -n 19 ffmpeg -i "$f" -map 0 -c copy "${f%.ts}.mp4"; done'
 alias png2jpg='for i in *.png ; do convert -quality 80% "$i" "${i%.*}.jpg" ; done'
 alias yt-dlpr='yt-dlp --restrict-filenames'
 
