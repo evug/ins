@@ -13,6 +13,7 @@ alias ct='curl https://www.cloudflare.com/cdn-cgi/trace/'
 alias gacp='f(){ git add . ; git commit -m "$*"; git push origin HEAD; unset -f f; }; f'
 alias g-staged='git diff --name-only --cached'
 alias gc='git commit -m'
+alias gcar='f() { curl -s https://api.github.com/users/"$1"/repos | jq -r '.[].clone_url' | xargs -L1 git clone ; unset -f f; }; f'
 alias gdb='git symbolic-ref refs/remotes/origin/HEAD' # default branch 
 alias gf='git fetch'
 alias gl='git log --oneline --graph'
