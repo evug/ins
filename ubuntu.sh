@@ -176,12 +176,12 @@ function install_golang() { #HELP Install Golang:\nBOCKER golang
   fi
 
   sudo wget --show-progress -qO- "https://golang.org$url" | sudo tar xz -C /opt
-  mkdir -p "$HOME/go/{bin,pkg,src}"
+  mkdir -p "$HOME/go/bin" "$HOME/go/pkg" "$HOME/go/src"
 
   if ! grep -q GOPATH ~/.profile ;then
     { echo 'export GOPATH="$HOME/go" #GoLang'
       echo 'export PATH="$PATH:/opt/go/bin:$GOPATH/bin" #GoLang'
-    } >> ~/.bashrc
+    } >> ~/.profile
     echo 'GOPATH added to PATH'
   fi
   go version
