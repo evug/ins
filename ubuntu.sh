@@ -342,7 +342,7 @@ function install_all() { #HELP Install Everything here:\nBOCKER all
   # Install utils
   sudo add-apt-repository ppa:maveonair/helix-editor
   update_sourcelist
-  sudo apt install git gnome-tweaks gnome-shell-extension-dash-to-panel \
+  sudo apt install git gnome-tweaks gnome-shell-extension-manager \
   gnome-screenshot xclip wl-clipboard doublecmd-gtk jq mupdf keepassx \
   p7zip-full fzf helix
   
