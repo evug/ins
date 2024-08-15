@@ -39,6 +39,7 @@ alias vst='vagrant global-status'
 alias vu='vagrant up'
 
 # Kubernetes
+alias mk="microk8s kubectl"
 alias k='kubectl'
 alias kd='kubectl describe'
 alias kg='kubectl get'
