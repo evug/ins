@@ -90,6 +90,7 @@ alias mp4fhd='shopt -s globstar; for f in **/*.mp4 ; do nice -n 19 ffmpeg -i "$f
 alias mp4remove='shopt -s globstar; ls -Q **/*mp4 | egrep  -v *small.mp4\"$ | xargs rm'
 alias ts2mp4='for f in *.ts; do nice -n 19 ffmpeg -i "$f" -map 0 -c copy "${f%.ts}.mp4"; done'
 alias png2jpg='for i in *.png ; do convert -quality 80% "$i" "${i%.*}.jpg" ; done'
+alias webmmp4='for f in *.webm; do nice -n 19 ffmpeg -fflags +genpts -i "$f" -r 24 "${f%.webm}.mp4"; done'
 alias yt-dlpr='yt-dlp --restrict-filenames'
 
 # System
