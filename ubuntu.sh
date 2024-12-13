@@ -187,15 +187,11 @@ function install_golang() { #HELP Install Golang:\nBOCKER golang
   go version
 }
 
-function install_java() { #HELP Install Oracle Java 17:\nBOCKER java
-  [ -d /opt/java ] && sudo rm -rf /opt/java/* || sudo mkdir -p /opt/java
-  local url='https://download.oracle.com/java/17/latest/jdk-17_linux-x64_bin.tar.gz'
-  sudo wget --show-progress -O- $url | sudo tar xz -C /opt/java --strip-components 1
+function install_java() { #HELP Install OpenJDK-17-JRE-headless:\nBOCKER java
+  sudo apt install openjdk-17-jre-headless
   # update-alternatives --install /usr/bin/java java /opt/java/bin/java 2000
-  if ! grep -q JAVA_HOME ~/.bashrc ;then
-    { echo 'export JAVA_HOME=/opt/java #Java'
-      echo 'export PATH=$PATH:$JAVA_HOME/bin #Java'
-    } >> ~/.bashrc
+  if ! grep -q JAVA_HOME ~/.profile ;then
+    echo 'export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64/' >> ~/.bashrc
     echo 'JAVA_HOME added to PATH'
   fi
   java --version
