@@ -15,17 +15,23 @@ function install_help() { #HELP Display this message:\nBOCKER help
 function install_androidsdk() { #HELP Display this message:\nBOCKER androidsdk
   # https://developer.android.com/studio/index.html
   echo "Installing Adndroid SDK"
-  url='https://dl.google.com/android/repository/commandlinetools-linux-9477386_latest.zip'
-  [ -d /opt/android ] && sudo rm -rf /opt/android/* || sudo mkdir -p /opt/android
+  echo "Installing Comandline Tools"
+  # [ -d /opt/android ] && sudo rm -rf /opt/android/* || sudo mkdir -p /opt/android
+  local file=$(wget --show-progress -qO- https://developer.android.com/studio \
+    | grep -oP 'commandlinetools-linux-([0-9]+)\_latest.zip' | head -1 )
   local tmp_zip="$(mktemp)"
-  wget --show-progress "$url" -qO "$tmp_zip"
-  sudo unzip -o "$tmp_zip" -d /opt/android
-  sudo mkdir -p /opt/android/cmdline-tools/latest
-  sudo mv $(ls /opt/android/cmdline-tools/ | grep -v latest) /opt/android/cmdline-tools/latest
+  wget --show-progress "https://dl.google.com/android/repository/$file" -qO "$tmp_zip"
+  mkdir -p "$HOME/.android/"
+  unzip -o "$tmp_zip" -d "$HOME/.android/" && rm "$tmp_zip"
+  echo "Installing latest Platform Tools"
+  tmp_zip="$(mktemp)"
+  wget --show-progress "https://dl.google.com/android/repository/platform-tools-latest-linux.zip" -qO "$tmp_zip"
+  unzip -o "$tmp_zip" -d "$HOME/.android/" && rm "$tmp_zip"
+  # sudo mkdir -p ~/.android/cmdline-tools/latest
+  # sudo mv $(ls ~/.android/cmdline-tools/ | grep -v latest) ~/.android/cmdline-tools/latest
   if ! grep -q ANDROID_HOME ~/.profile ;then
-    { echo 'export ANDROID_HOME="/opt/android" #Android'
-      echo 'export PATH="$PATH:$ANDROID_HOME/cmdline-tools/latest/bin" #Android'
-      echo 'export ANDROID_SDK_ROOT="$ANDROID_HOME/cmdline-tools" #Android'
+    { echo 'export ANDROID_HOME=~/.android #Android'
+      echo 'export PATH=$PATH:$ANDROID_HOME/cmdline-tools/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator: #Android'
     } >> ~/.profile
     echo 'ANDROID_HOME added to PATH'
   fi
@@ -86,24 +92,11 @@ function install_flutter() { #HELP Install Flutter:\nBOCKER flutter
   sudo apt-get install libc6:i386 libncurses5:i386 libstdc++6:i386 lib32z1 libbz2-1.0:i386
   sudo apt-get install -y curl git unzip xz-utils zip libglu1-mesa
   echo "Installing Flutter SDK"
-  # local url=$(wget --show-progress -qO- https://golang.org/dl/ | grep -oP '\/dl\/go([0-9\.]+)\.linux-amd64\.tar\.gz' | head -1 )
   mkdir "$HOME/.android"
-  wget 'https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.22.1-stable.tar.xz'
-  tar -xf flutter_linux_3.22.1-stable.tar.xz -C "$HOME/.android"
+  wget 'https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.27.0-stable.tar.xz' -qP ~/Downloads/
+  tar -xf ~/Downloads/flutter_linux_3.27.0-stable.tar.xz -C "$HOME/.android"
   echo 'export PATH="$PATH:$HOME/.android/flutter/bin" #Flutter' >> ~/.profile
-  
-  echo "Installing Adndroid SDK"
-  local file=$(wget --show-progress -qO- https://developer.android.com/studio \
-    | grep -oP '\/commandlinetools-linux-([0-9]+)_latest\.zip')
-  wget --show-progress "https://dl.google.com/android/repository/$file"
-  unzip "$file" -d "$HOME/.android" && rm "$file"
-  if ! grep -q ANDROID_SDK_ROOT ~/.profile ;then
-  { echo 'export ANDROID_SDK_ROOT="$HOME/.android"'
-    echo 'export PATH="$PATH:$ANDROID_SDK_ROOT/cmdline-tools/latest/bin:$ANDROID_SDK_ROOT/emulator"'
-  } >> ~/.profile
-  echo 'ANDROID_HOME added to PATH'
-  fi
-}
+  }
 function install_gcpsdk() { #HELP Install GCP SDK:\nBOCKER gcpsdk
   sudo apt-get update
   sudo apt-get install apt-transport-https ca-certificates gnupg curl
