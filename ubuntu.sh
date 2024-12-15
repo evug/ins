@@ -23,15 +23,15 @@ function install_androidsdk() { #HELP Display this message:\nBOCKER androidsdk
   wget --show-progress "https://dl.google.com/android/repository/$file" -qO "$tmp_zip"
   mkdir -p "$HOME/.android/"
   unzip -o "$tmp_zip" -d "$HOME/.android/" && rm "$tmp_zip"
-  echo "Installing latest Platform Tools"
-  tmp_zip="$(mktemp)"
-  wget --show-progress "https://dl.google.com/android/repository/platform-tools-latest-linux.zip" -qO "$tmp_zip"
-  unzip -o "$tmp_zip" -d "$HOME/.android/" && rm "$tmp_zip"
-  # sudo mkdir -p ~/.android/cmdline-tools/latest
-  # sudo mv $(ls ~/.android/cmdline-tools/ | grep -v latest) ~/.android/cmdline-tools/latest
+  # echo "Installing latest Platform Tools"
+  # tmp_zip="$(mktemp)"
+  # wget --show-progress "https://dl.google.com/android/repository/platform-tools-latest-linux.zip" -qO "$tmp_zip"
+  # unzip -o "$tmp_zip" -d "$HOME/.android/" && rm "$tmp_zip"
+  sudo mkdir -p ~/.android/cmdline-tools/latest
+  sudo mv $(ls ~/.android/cmdline-tools/ | grep -v latest) ~/.android/cmdline-tools/latest
   if ! grep -q ANDROID_HOME ~/.profile ;then
     { echo 'export ANDROID_HOME=~/.android #Android'
-      echo 'export PATH=$PATH:$ANDROID_HOME/cmdline-tools/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator: #Android'
+      echo 'export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator: #Android'
     } >> ~/.profile
     echo 'ANDROID_HOME added to PATH'
   fi
