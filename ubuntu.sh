@@ -90,8 +90,11 @@ function install_flutter() { #HELP Install Flutter:\nBOCKER flutter
   mkdir -p ~/.android
   wget --show-progress 'https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.27.0-stable.tar.xz' -qP ~/Downloads/
   tar -xf ~/Downloads/flutter_linux_3.27.0-stable.tar.xz -C "$HOME/.android"
-  echo 'export PATH="$PATH:$HOME/.android/flutter/bin" #Flutter' >> ~/.profile
-  }
+  if ! grep -q "flutter/bin" ~/.profile ;then
+    echo 'export PATH="$PATH:$HOME/.android/flutter/bin" #Flutter' >> ~/.profile
+    echo '~/.android/flutter/bin' added to PATH
+  fi
+}
 function install_gcpsdk() { #HELP Install GCP SDK:\nBOCKER gcpsdk
   sudo apt-get update
   sudo apt-get install apt-transport-https ca-certificates gnupg curl
