@@ -88,7 +88,7 @@ function install_flutter() { #HELP Install Flutter:\nBOCKER flutter
   sudo apt install libc6:amd64 libstdc++6:amd64 lib32z1 libbz2-1.0:amd64
   echo "Installing Flutter SDK"
   mkdir -p ~/.android
-  wget 'https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.27.0-stable.tar.xz' -qP ~/Downloads/
+  wget --show-progress 'https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.27.0-stable.tar.xz' -qP ~/Downloads/
   tar -xf ~/Downloads/flutter_linux_3.27.0-stable.tar.xz -C "$HOME/.android"
   echo 'export PATH="$PATH:$HOME/.android/flutter/bin" #Flutter' >> ~/.profile
   }
