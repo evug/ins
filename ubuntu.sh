@@ -379,7 +379,7 @@ Pin-Priority: -10" | sudo tee /etc/apt/preferences.d/nosnap.pref
 
 [[ -z "${1-}" ]] && install_help "$0" && exit 1
 case $1 in
-  all|androidsdk|awscli|chrome|code|codium|firefox|golang|gcpsdk|gh|java|k9s|misc|podman\
+  all|androidsdk|awscli|chrome|code|codium|firefox|flutter|golang|gcpsdk|gh|java|k9s|misc|podman\
   |sublime|terraform|qbittorrent|warp|zoom) install_"$1" "${@:2}" ;;
   *) install_help "$0" ;;
 esac
