@@ -12,9 +12,7 @@ function install_help() { #HELP Display this message:\nBOCKER help
   sed -n "s/^.*#HELP\\s//p;" < "$1" | sed "s/\\\\n/\n\t/g;s/$/\n/;s!BOCKER!${1/!/\\!}!g"
 }
 
-function install_androidsdk() { #HELP Display this message:\nBOCKER androidsdk
-  # https://developer.android.com/studio/index.html
-  echo "Installing Adndroid SDK"
+function install_androidsdk() { #HELP Install Android Tools:\nBOCKER androidsdk
   echo "Installing Comandline Tools"
   # [ -d /opt/android ] && sudo rm -rf /opt/android/* || sudo mkdir -p /opt/android
   local file=$(wget --show-progress -qO- https://developer.android.com/studio \
@@ -23,12 +21,10 @@ function install_androidsdk() { #HELP Display this message:\nBOCKER androidsdk
   wget --show-progress "https://dl.google.com/android/repository/$file" -qO "$tmp_zip"
   mkdir -p "$HOME/.android/"
   unzip -o "$tmp_zip" -d "$HOME/.android/" && rm "$tmp_zip"
-  # echo "Installing latest Platform Tools"
-  # tmp_zip="$(mktemp)"
-  # wget --show-progress "https://dl.google.com/android/repository/platform-tools-latest-linux.zip" -qO "$tmp_zip"
-  # unzip -o "$tmp_zip" -d "$HOME/.android/" && rm "$tmp_zip"
+  rm -rf ~/.android/cmdline-tools/latest
+  local a=$(ls -d ~/.android/cmdline-tools/*)
   mkdir -p ~/.android/cmdline-tools/latest
-  mv $(ls ~/.android/cmdline-tools/ | grep -v latest) ~/.android/cmdline-tools/latest
+  mv $a ~/.android/cmdline-tools/latest
   if ! grep -q ANDROID_HOME ~/.profile ;then
     { echo 'export ANDROID_HOME=~/.android #Android'
       echo 'export PATH=$PATH:$ANDROID_HOME/cmdline-tools/latest/bin:$ANDROID_HOME/platform-tools:$ANDROID_HOME/emulator: #Android'
@@ -37,7 +33,7 @@ function install_androidsdk() { #HELP Display this message:\nBOCKER androidsdk
   fi
 }
 
-function install_awscli() { #HELP Display this message:\nBOCKER awscli
+function install_awscli() { #HELP Install Awscli:\nBOCKER awscli
   echo "Installing AWSCli v2"
   local tmp_dir="$(mktemp -d)"
   local src_url='https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip'
