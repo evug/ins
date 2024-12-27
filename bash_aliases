@@ -105,21 +105,24 @@ alias aliasf='compgen -A function | grep -v ^_'
 alias zzz="systemctl suspend"
 
 
-trf() { [[ "$1" ]] || { echo "Error: Missing the phrase to translate" >&2; return 1; }
+trf() { local text=$(xclip -selection clipboard -o)
+      [[ "$text" ]] || [[ "$1" ]] || { echo "Error: Missing the phrase to translate" >&2; return 1; }
       curl -s -X POST 'https://api-free.deepl.com/v2/translate' \
             -H "Authorization: DeepL-Auth-Key $LLLLL" \
             -d "text=$*" \
             -d "target_lang=FR" \
       | jq -r .translations[0].text
 }
-tre() { [[ "$1" ]] || { echo "Error: Missing the phrase to translate" >&2; return 1; }
+tre() { local text=$(xclip -selection clipboard -o)
+      [[ "$text" ]] || [[ "$1" ]] || { echo "Error: Missing the phrase to translate" >&2; return 1; }
       curl -s -X POST 'https://api-free.deepl.com/v2/translate' \
             -H "Authorization: DeepL-Auth-Key $LLLLL" \
             -d "text=$*" \
             -d "target_lang=EN" \
       | jq -r .translations[0].text
 }
-trr() { [[ "$1" ]] || { echo "Error: Missing the phrase to translate" >&2; return 1; }
+trr() { local text=$(xclip -selection clipboard -o)
+      [[ "$text" ]] || [[ "$1" ]] || { echo "Error: Missing the phrase to translate" >&2; return 1; }
       curl -s -X POST 'https://api-free.deepl.com/v2/translate' \
             -H "Authorization: DeepL-Auth-Key $LLLLL" \
             -d "text=$*" \
