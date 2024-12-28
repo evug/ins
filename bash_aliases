@@ -104,6 +104,12 @@ alias upd='wget -qO $HOME/.bash_aliases https://raw.githubusercontent.com/evug/i
 alias aliasf='compgen -A function | grep -v ^_'
 alias zzz="systemctl suspend"
 
+g() { [[ "$1" ]] || { echo "Error: Missing the question" >&2; return 1; }
+      curl "https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=AI$G" \
+           -H 'Content-Type: application/json' \
+           -X POST \
+           -d "{\"contents\": [{ \"parts\":[{\"text\": \"$1\"}]}]}" | jq -r '.candidates[].content.parts[].text'
+}
 
 trf() { local text=$(xclip -selection clipboard -o)
       [[ "$text" ]] || [[ "$1" ]] || { echo "Error: Missing the phrase to translate" >&2; return 1; }
