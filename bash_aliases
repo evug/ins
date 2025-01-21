@@ -92,7 +92,9 @@ alias ts2mp4='for f in *.ts; do nice -n 19 ffmpeg -i "$f" -map 0 -c copy "${f%.t
 alias png2jpg='for i in *.png ; do convert -quality 80% "$i" "${i%.*}.jpg" ; done'
 alias webmmp4='for f in *.webm; do nice -n 19 ffmpeg -fflags +genpts -i "$f" -r 24 "${f%.webm}.mp4"; done'
 alias yt-dlpr='yt-dlp --restrict-filenames'
-alias yt-b='yt-dlp --restrict-filenames -f bv*+ba' 
+alias yt-b='yt-dlp --restrict-filenames -f "bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best"' 
+alias yt-640='yt-dlp --restrict-filenames -f "bestvideo[height=640][ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]"' 
+
 
 # System
 alias auu='sudo apt update && sudo apt upgrade'
