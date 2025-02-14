@@ -130,6 +130,14 @@ tre() { local text=$(xclip -selection clipboard -o)
             -d "target_lang=EN" \
       | jq -r .translations[0].text
 }
+trg() { local text=$(xclip -selection clipboard -o)
+      [[ "$text" ]] || [[ "$1" ]] || { echo "Error: Missing the phrase to translate" >&2; return 1; }
+      curl -s -X POST 'https://api-free.deepl.com/v2/translate' \
+            -H "Authorization: DeepL-Auth-Key $LLLLL" \
+            -d "text=$*" \
+            -d "target_lang=DE" \
+      | jq -r .translations[0].text
+}
 trr() { local text=$(xclip -selection clipboard -o)
       [[ "$text" ]] || [[ "$1" ]] || { echo "Error: Missing the phrase to translate" >&2; return 1; }
       curl -s -X POST 'https://api-free.deepl.com/v2/translate' \
@@ -151,3 +159,4 @@ alias а=tre
 alias t=trr
 alias f=trf
 alias e=tre
+alias н=trg
