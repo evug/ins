@@ -264,8 +264,7 @@ function install_misc() { #HELP Install small things:\nBOCKER misc
 
 function install_qbittorrent() { #HELP Display this message:\nBOCKER qbittorrent
   sudo apt install qbittorrent-nox
-  sudo adduser --home=/home/qb --system --group qbittorrent-nox
-  sudo adduser $USER qbittorrent-nox
+  sudo adduser --home=/home/qb --shell /usr/sbin/nologin --system --group qbittorrent-nox
   echo '
 [Unit]
 Description=qBittorrent Command Line Client
@@ -276,13 +275,26 @@ Type=forking
 User=qbittorrent-nox
 Group=qbittorrent-nox
 UMask=007
-ExecStart=/usr/bin/qbittorrent-nox -d --webui-port=8080
+ExecStart=/usr/bin/qbittorrent-nox -d --webui-port=8080 --confirm-legal-notice
 Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target
   '| sudo tee /etc/systemd/system/qbittorrent-nox.service 
   sudo systemctl enable qbittorrent-nox --now
+  echo '
+  [Preferences]
+General\Locale=en
+MailNotification\req_auth=true
+WebUI\AuthSubnetWhitelist=@Invalid()
+WebUI\LocalHostAuth=true
+WebUI\Password_PBKDF2="@ByteArray(EHN4bkPdWwLUybXWh0HMAQ==:EMGx6UfFkBINh7PdkkGCxUuKJ26YjwNCMwMahNbJeIs9FsH3PeohQxv39NUR6/IJvC+/1Uk+FkQuXcY4NdPKOQ==)"
+
+[RSS]
+AutoDownloader\DownloadRepacks=true
+AutoDownloader\SmartEpisodeFilter=s(\\d+)e(\\d+), (\\d+)x(\\d+), "(\\d{4}[.\\-]\\d{1,2}[.\\-]\\d{1,2})", "(\\d{1,2}[.\\-]\\d{1,2}[.\\-]\\d{4})"
+  '| tee -a >> /home/qb/.config/qBittorrent/qBittorrent.conf
+  sudo systemctl restart qbittorrent-nox.service 
 }
 
 function install_warp() { #HELP Install cloudflare:\nBOCKER warp
