@@ -76,7 +76,6 @@ alias c='cargo'
 alias ffmpeg='ffmpeg -hide_banner'
 alias ffplay='ffplay -hide_banner -autoexit'
 alias ffprobe='ffprobe -hide_banner'
-alias pofu="python3 ~/prj/py/put_one_folder_up.py"
 alias zr="python3 ~/prj/py/zero_renamer.py"
 function audioToOpus { ffmpeg -i "$2" -c:a libopus -b:a "$1" "${2%.*}.opus" ; }
 alias mp3opus='for f in *.mp3; do nice -n 19 ffmpeg -i "$f" -c:a libopus -b:a 32k "${f%.mp3}.opus"; done'
@@ -153,6 +152,16 @@ trb() { local text=$(xclip -selection clipboard -o)
             -d "text=$text" \
             -d "target_lang=RU" \
       | jq -r .translations[0].text
+}
+put_one_folder_up() {
+      find . -mindepth 2 -type f | while read -r filepath; do
+            dirname=$(dirname "$filepath" | sed 's|^\./||')
+            filename=$(basename "$filepath")
+            prefix=$(echo "$dirname" | tr '/' '_')
+            new_filename="${prefix}_${filename}"
+            mv "$filepath" "./$new_filename"
+      done
+      find . -mindepth 1 -type d -empty -delete
 }
 alias ф=trf
 alias а=tre
