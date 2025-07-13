@@ -159,9 +159,26 @@ put_one_folder_up() {
             filename=$(basename "$filepath")
             prefix=$(echo "$dirname" | tr '/' '_')
             new_filename="${prefix}_${filename}"
+            echo "Rename $filepath to $new_filename" 
             mv "$filepath" "./$new_filename"
       done
       find . -mindepth 1 -type d -empty -delete
+}
+zero_renamer() {
+      find . -depth -name "[0-9]*" | while IFS= read -r item; do
+            dir=$(dirname "$item")
+            base=$(basename "$item")
+            if [[ "$base" =~ ^[0-9][^0-9] || "$base" =~ ^[0-9]$ ]]; then
+                  new_base="0${base}"
+                  new_path="${dir}/${new_base}"
+                  if [ -e "$new_path" ]; then
+                        echo "Skipping '$item': Destination '$new_path' already exists."
+                  else
+                        echo "Renaming '$item' to '$new_path'"
+                        mv "$item" "$new_path"
+                  fi
+            fi
+      done
 }
 alias ф=trf
 alias а=tre
