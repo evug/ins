@@ -113,36 +113,28 @@ g() { [[ "$1" ]] || { echo "Error: Missing the question" >&2; return 1; }
            -d "{\"contents\": [{ \"parts\":[{\"text\": \"$*\"}]}]}" | jq -r '.candidates[].content.parts[].text'
 }
 
-trf() { local text=$(xclip -selection clipboard -o)
-      [[ "$text" ]] || [[ "$1" ]] || { echo "Error: Missing the phrase to translate" >&2; return 1; }
+trf() {
+      [[ "$1" ]] || { echo "Error: Missing the phrase to translate" >&2; return 1; }
       curl -s -X POST 'https://api-free.deepl.com/v2/translate' \
             -H "Authorization: DeepL-Auth-Key $LLLLL" \
             -d "text=$*" \
             -d "target_lang=FR" \
       | jq -r .translations[0].text
 }
-tre() { local text=$(xclip -selection clipboard -o)
-      [[ "$text" ]] || [[ "$1" ]] || { echo "Error: Missing the phrase to translate" >&2; return 1; }
+tre() {
+      [[ "$1" ]] || { echo "Error: Missing the phrase to translate" >&2; return 1; }
       curl -s -X POST 'https://api-free.deepl.com/v2/translate' \
             -H "Authorization: DeepL-Auth-Key $LLLLL" \
             -d "text=$*" \
             -d "target_lang=EN" \
       | jq -r .translations[0].text
 }
-trg() { local text=$(xclip -selection clipboard -o)
-      [[ "$text" ]] || [[ "$1" ]] || { echo "Error: Missing the phrase to translate" >&2; return 1; }
+trg() {
+      [[ "$1" ]] || { echo "Error: Missing the phrase to translate" >&2; return 1; }
       curl -s -X POST 'https://api-free.deepl.com/v2/translate' \
             -H "Authorization: DeepL-Auth-Key $LLLLL" \
             -d "text=$*" \
             -d "target_lang=DE" \
-      | jq -r .translations[0].text
-}
-trr() { local text=$(xclip -selection clipboard -o)
-      [[ "$text" ]] || [[ "$1" ]] || { echo "Error: Missing the phrase to translate" >&2; return 1; }
-      curl -s -X POST 'https://api-free.deepl.com/v2/translate' \
-            -H "Authorization: DeepL-Auth-Key $LLLLL" \
-            -d "text=$*" \
-            -d "target_lang=RU" \
       | jq -r .translations[0].text
 }
 trb() { local text=$(xclip -selection clipboard -o)
@@ -153,7 +145,7 @@ trb() { local text=$(xclip -selection clipboard -o)
             -d "target_lang=RU" \
       | jq -r .translations[0].text
 }
-put_one_folder_up() {
+put_one_folder_up() {.
       find . -mindepth 2 -type f | while read -r filepath; do
             dirname=$(dirname "$filepath" | sed 's|^\./||')
             filename=$(basename "$filepath")
@@ -182,7 +174,6 @@ zero_renamer() {
 }
 alias ф=trf
 alias а=tre
-alias t=trr
 alias f=trf
 alias e=tre
 alias н=trg
