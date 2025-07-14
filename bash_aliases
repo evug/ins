@@ -76,7 +76,6 @@ alias c='cargo'
 alias ffmpeg='ffmpeg -hide_banner'
 alias ffplay='ffplay -hide_banner -autoexit'
 alias ffprobe='ffprobe -hide_banner'
-alias zr="python3 ~/prj/py/zero_renamer.py"
 function audioToOpus { ffmpeg -i "$2" -c:a libopus -b:a "$1" "${2%.*}.opus" ; }
 alias mp3opus='for f in *.mp3; do nice -n 19 ffmpeg -i "$f" -c:a libopus -b:a 32k "${f%.mp3}.opus"; done'
 alias mp4mp3='for f in *.mp4; do nice -n 19 ffmpeg -i "$f" -acodec libmp3lame -vn -b:a 64k "${f%.mp4}.mp3"; done'
