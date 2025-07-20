@@ -144,7 +144,7 @@ trb() { local text=$(xclip -selection clipboard -o)
             -d "target_lang=RU" \
       | jq -r .translations[0].text
 }
-put_one_folder_up() {.
+put_one_folder_up() {
       find . -mindepth 2 -type f | while read -r filepath; do
             dirname=$(dirname "$filepath" | sed 's|^\./||')
             filename=$(basename "$filepath")
