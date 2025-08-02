@@ -88,12 +88,12 @@ function install_flutter() { #HELP Install Flutter:\nBOCKER flutter
   sudo apt install libc6:amd64 libstdc++6:amd64 lib32z1 libbz2-1.0:amd64
   echo "Installing Flutter SDK"
   mkdir -p ~/.android
-  wget --show-progress 'https://storage.googleapis.com/flutter_infra_release/releases/stable/linux/flutter_linux_3.27.0-stable.tar.xz' -qP ~/Downloads/
-  tar -xf ~/Downloads/flutter_linux_3.27.0-stable.tar.xz -C "$HOME/.android"
+  git clone --depth 1 https://github.com/flutter/flutter.git -b stable $HOME/.android/
   if ! grep -q "flutter/bin" ~/.profile ;then
     echo 'export PATH="$PATH:$HOME/.android/flutter/bin" #Flutter' >> ~/.profile
     echo '~/.android/flutter/bin' added to PATH
   fi
+  source ~/.profile
 }
 function install_gcpsdk() { #HELP Install GCP SDK:\nBOCKER gcpsdk
   sudo apt-get update
@@ -137,6 +137,23 @@ Run "gcloud init"  to get started'
     echo autocomplition for k added
   fi
 }
+function install_gemini(){ #HELP Install Gemini Cli:\nBOCKER gemini
+local NODE_MAJOR=22
+sudo mkdir -p /etc/apt/keyrings
+curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key \
+  | sudo gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg
+
+echo "--- Adding the NodeSource repository for Node.js v$NODE_MAJOR.x ---"
+echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_$NODE_MAJOR.x nodistro main"\
+  | sudo tee /etc/apt/sources.list.d/nodesource.list
+
+update_sourcelist
+sudo apt install nodejs -y
+echo "Node.js version: $(node -v)"
+echo "npm version: $(npm -v)"
+npm install -g @google/gemini-cli
+echo "Gemini $(gemini --version) installed"
+}
 
 function install_gh() { #HELP Install GitHub Cli:\nBOCKER gh
   type -p curl >/dev/null || sudo apt install curl -y
@@ -178,11 +195,11 @@ function install_golang() { #HELP Install Golang:\nBOCKER golang
   go version
 }
 
-function install_java() { #HELP Install OpenJDK-17-JRE-headless:\nBOCKER java
-  sudo apt install openjdk-17-jre-headless
+function install_java() { #HELP Install OpenJDK-17-JDK:\nBOCKER java
+  sudo apt install openjdk-17-jdk
   # update-alternatives --install /usr/bin/java java /opt/java/bin/java 2000
   if ! grep -q JAVA_HOME ~/.profile ;then
-    echo 'export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64/' >> ~/.bashrc
+    echo 'export JAVA_HOME=/usr/lib/jvm/java-17-openjdk-amd64/' >> ~/.profile
     echo 'JAVA_HOME added to PATH'
   fi
   java --version
@@ -262,7 +279,7 @@ function install_misc() { #HELP Install small things:\nBOCKER misc
   sudo apt install apt-transport-https curl gnupg ca-certificates bash-completion git
 }
 
-function install_qbittorrent() { #HELP Display this message:\nBOCKER qbittorrent
+function install_qb() { #HELP Display this message:\nBOCKER qb
   sudo apt install qbittorrent-nox
   sudo adduser --home=/home/qb --shell /usr/sbin/nologin --system --group qbittorrent-nox
   echo '
@@ -394,7 +411,7 @@ Pin-Priority: -10" | sudo tee /etc/apt/preferences.d/nosnap.pref
 
 [[ -z "${1-}" ]] && install_help "$0" && exit 1
 case $1 in
-  all|androidsdk|awscli|chrome|code|codium|firefox|flutter|golang|gcpsdk|gh|java|k9s|misc|podman\
-  |sublime|terraform|qbittorrent|warp|zoom) install_"$1" "${@:2}" ;;
+  all|androidsdk|awscli|chrome|code|codium|firefox|flutter|gemini|golang|gcpsdk|gh|java|k9s|misc|podman\
+  |sublime|terraform|qb|warp|zoom) install_"$1" "${@:2}" ;;
   *) install_help "$0" ;;
 esac
