@@ -325,6 +325,17 @@ function install_warp() { #HELP Install cloudflare:\nBOCKER warp
   warp-cli register
 }
 
+function install_wezterm { #HELP Install WezTerm:\nBOCKER wezterm
+  curl -fsSL https://apt.fury.io/wez/gpg.key \
+    | sudo gpg --yes --dearmor -o /usr/share/keyrings/wezterm-fury.gpg
+  echo 'deb [signed-by=/usr/share/keyrings/wezterm-fury.gpg] https://apt.fury.io/wez/ * *'\
+    | sudo tee /etc/apt/sources.list.d/wezterm.list
+  sudo chmod 644 /usr/share/keyrings/wezterm-fury.gpg
+  update_sourcelist
+  sudo apt install wezterm
+  sudo update-alternatives --set x-terminal-emulator /usr/bin/open-wezterm-here
+}
+
 function install_all() { #HELP Install Everything here:\nBOCKER all
   install_misc
   install_androidsdk
@@ -341,6 +352,7 @@ function install_all() { #HELP Install Everything here:\nBOCKER all
   install_sublime
   install_terraform
   install_wrap
+  install_wezterm
   install_zoom
   
   # VS Code plugins
@@ -412,6 +424,6 @@ Pin-Priority: -10" | sudo tee /etc/apt/preferences.d/nosnap.pref
 [[ -z "${1-}" ]] && install_help "$0" && exit 1
 case $1 in
   all|androidsdk|awscli|chrome|code|codium|firefox|flutter|gemini|golang|gcpsdk|gh|java|k9s|misc|podman\
-  |sublime|terraform|qb|warp|zoom) install_"$1" "${@:2}" ;;
+  |sublime|terraform|qb|warp|wezterm|zoom) install_"$1" "${@:2}" ;;
   *) install_help "$0" ;;
 esac
