@@ -44,6 +44,13 @@ function install_awscli() { #HELP Install Awscli:\nBOCKER awscli
   rm "$tmp_dir"
 }
 
+function install_brave() {  #HELP Install Brave:\nBOCKER brave
+sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+sudo curl -fsSLo /etc/apt/sources.list.d/brave-browser-release.sources https://brave-browser-apt-release.s3.brave.com/brave-browser.sources
+update_sourcelist
+sudo apt install brave-browser
+}
+
 function install_code() { #HELP Install Code:\nBOCKER code
   wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > packages.microsoft.gpg
   sudo install -D -o root -g root -m 644 packages.microsoft.gpg /etc/apt/keyrings/packages.microsoft.gpg
@@ -334,11 +341,13 @@ function install_wezterm { #HELP Install WezTerm:\nBOCKER wezterm
   update_sourcelist
   sudo apt install wezterm
   sudo update-alternatives --set x-terminal-emulator /usr/bin/open-wezterm-here
+  
 }
 
 function install_all() { #HELP Install Everything here:\nBOCKER all
   install_misc
   install_androidsdk
+  install_brave
   install_chrome
   install_code
   install_codium
@@ -423,7 +432,7 @@ Pin-Priority: -10" | sudo tee /etc/apt/preferences.d/nosnap.pref
 
 [[ -z "${1-}" ]] && install_help "$0" && exit 1
 case $1 in
-  all|androidsdk|awscli|chrome|code|codium|firefox|flutter|gemini|golang|gcpsdk|gh|java|k9s|misc|podman\
+  all|androidsdk|awscli|brave|chrome|code|codium|firefox|flutter|gemini|golang|gcpsdk|gh|java|k9s|misc|podman\
   |sublime|terraform|qb|warp|wezterm|zoom) install_"$1" "${@:2}" ;;
   *) install_help "$0" ;;
 esac
