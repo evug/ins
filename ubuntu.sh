@@ -45,10 +45,10 @@ function install_awscli() { #HELP Install Awscli:\nBOCKER awscli
 }
 
 function install_brave() {  #HELP Install Brave:\nBOCKER brave
-sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
-sudo curl -fsSLo /etc/apt/sources.list.d/brave-browser-release.sources https://brave-browser-apt-release.s3.brave.com/brave-browser.sources
-update_sourcelist
-sudo apt install brave-browser
+  sudo curl -fsSLo /usr/share/keyrings/brave-browser-archive-keyring.gpg https://brave-browser-apt-release.s3.brave.com/brave-browser-archive-keyring.gpg
+  sudo curl -fsSLo /etc/apt/sources.list.d/brave-browser-release.sources https://brave-browser-apt-release.s3.brave.com/brave-browser.sources
+  update_sourcelist
+  sudo apt install brave-browser
 }
 
 function install_code() { #HELP Install Code:\nBOCKER code
@@ -79,14 +79,21 @@ function install_chrome() { #HELP Install Google Chrome:\nBOCKER chrome
 }
 function install_firefox() { #HELP Install Firefox:\nBOCKER firefox
   sudo snap remove firefox || true
-  sudo add-apt-repository ppa:mozillateam/ppa
+  wget -q https://packages.mozilla.org/apt/repo-signing-key.gpg -O- 
+  | sudo tee /etc/apt/keyrings/packages.mozilla.org.asc > /dev/null
+  gpg -n -q --import --import-options import-show /etc/apt/keyrings/packages.mozilla.org.asc \
+  | awk '/pub/{getline; gsub(/^ +| +$/,""); if($0 == "35BAA0B33E9EB396F59CA838C0BA5CE6DC6315A3") print "\nThe key fingerprint matches ("$0").\n"; else print "\nVerification failed: the fingerprint ("$0") does not match the expected one.\n"}'
+  echo "deb [signed-by=/etc/apt/keyrings/packages.mozilla.org.asc] https://packages.mozilla.org/apt mozilla main" | sudo tee -a /etc/apt/sources.list.d/mozilla.list > /dev/null
+  echo 'Types: deb
+URIs: https://packages.mozilla.org/apt
+Suites: mozilla
+Components: main
+Signed-By: /etc/apt/keyrings/packages.mozilla.org.asc' | sudo tee /etc/apt/sources.list.d/mozilla.sources
   echo '
-  Package: *
-  Pin: release o=LP-PPA-mozillateam
-  Pin-Priority: 1001
-  ' | sudo tee /etc/apt/preferences.d/mozilla-firefox
-  echo 'Unattended-Upgrade::Allowed-Origins:: "LP-PPA-mozillateam:${distro_codename}";' \
-  | sudo tee /etc/apt/apt.conf.d/51unattended-upgrades-firefox
+Package: *
+Pin: origin packages.mozilla.org
+Pin-Priority: 1000
+' | sudo tee /etc/apt/preferences.d/mozilla
   update_sourcelist
   sudo apt install firefox
 }
