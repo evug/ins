@@ -33,11 +33,5 @@ if [ "$(md5sum "$file" | awk '{print $1}')" != "$(cat cloudready_recovery.json |
     exit
 fi
 
-usb_serial="$(udevadm info --query=all --name=/dev/sdb | grep "ID_SERIAL_SHORT=" | awk -F'=' '{print $2}')"
-
-if [ "$usb_serial" == "4C530001081102122170" ]; then
-  sudo dd if="${file%.zip}" of=/dev/sdb bs=4M status=progress
-else
-  echo "Wrong USB stick"
-fi
-echo "Flashing the latest Chrome OS flex"
+USB_PRESENT=$(lsblk -o PATH,SERIAL | grep 4C530001081102122170 | cut -f1 -d" ")
+sudo dd if="${file%.zip}" of="$USB_PRESENT" bs=4M status=progress
