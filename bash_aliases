@@ -100,8 +100,8 @@ alias yt-640='yt-dlp -f 230+233'
 # System
 alias auu='sudo apt update && sudo apt upgrade && sudo apt -y autoremove'
 alias cb='xclip -selection clipboard'
-alias h=history
-alias ss=sudo systemctl
+alias h='history'
+alias ss='sudo systemctl'
 alias empty-trash='rm -rf ~/.local/share/Trash/*'
 alias inf="uname -sr && uptime|sed 's/ //' && lscpu|grep 'CPU MHz:' && acpi && \
            echo -n 'Memory in use: ' && free -m|grep Mem|awk '{print \$3+\$5\" megs\"}'"
