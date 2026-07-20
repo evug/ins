@@ -105,7 +105,7 @@ alias ss='sudo systemctl'
 alias empty-trash='rm -rf ~/.local/share/Trash/*'
 alias inf="uname -sr && uptime|sed 's/ //' && lscpu|grep 'CPU MHz:' && acpi && \
            echo -n 'Memory in use: ' && free -m|grep Mem|awk '{print \$3+\$5\" megs\"}'"
-alias upd='wget -qO $HOME/.bash_aliases https://raw.githubusercontent.com/evug/ins/main/bash_aliases && source $HOME/.bash_aliases && echo Updated || echo Not updated'
+alias upd='wget -qO $HOME/.bash_aliases https://codeberg.org/evsu/ins/raw/branch/main/bash_aliases && source $HOME/.bash_aliases && echo Updated || echo Not updated'
 alias aliasf='compgen -A function | grep -v ^_'
 alias zzz="systemctl suspend"
 
